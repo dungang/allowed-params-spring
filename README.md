@@ -15,7 +15,8 @@ spring boot allowed params
 
 > 服务端代码
 
-只允许`name`这个字段被接受
+* 只允许`name`这个字段被接受
+* 在方法参数上注解，允许接受的参数列表，不在清单的参数不会被赋值给模型
 
 ```
 public AjaxResult edit(@Valid @AllowedParams(params= {"name"}) Department department ){}
