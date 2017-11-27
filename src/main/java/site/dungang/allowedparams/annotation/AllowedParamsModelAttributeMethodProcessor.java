@@ -1,10 +1,12 @@
 package site.dungang.allowedparams.annotation;
 
 import java.lang.annotation.Annotation;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 
 import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +32,7 @@ import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.servlet.HandlerMapping;
 
-import site.dungang.allowedparams.AllowedParamNativeWebRequest;
+import site.dungang.allowedparams.AllowedParamWrapper;
 
 public class AllowedParamsModelAttributeMethodProcessor implements HandlerMethodArgumentResolver, HandlerMethodReturnValueHandler {
 	
@@ -38,7 +40,9 @@ public class AllowedParamsModelAttributeMethodProcessor implements HandlerMethod
 
 	@Override
 	public boolean supportsReturnType(MethodParameter parameter) {
-		return parameter.hasParameterAnnotation(AllowedParams.class);
+		boolean isSupported = parameter.hasParameterAnnotation(AllowedParams.class);
+		logger.debug("检查方法返回值是否支持： AllowedParams 注解 : " + isSupported);
+		return isSupported;
 	}
 
 	@Override
@@ -53,8 +57,9 @@ public class AllowedParamsModelAttributeMethodProcessor implements HandlerMethod
 
 	@Override
 	public boolean supportsParameter(MethodParameter parameter) {
-		logger.debug("检查方法参数是否支持： AllowedParams 注解");
-		return parameter.hasParameterAnnotation(AllowedParams.class);
+		boolean isSupported = parameter.hasParameterAnnotation(AllowedParams.class);
+		logger.debug("检查方法参数是否支持： AllowedParams 注解 : " + isSupported);
+		return isSupported;
 	}
 
 	/**
@@ -75,6 +80,8 @@ public class AllowedParamsModelAttributeMethodProcessor implements HandlerMethod
 		Object attribute = (mavContainer.containsAttribute(name) ? mavContainer.getModel().get(name) :
 				createAttribute(name, parameter, binderFactory, webRequest));
 
+		logger.debug("attribute : " + attribute.toString());
+		
 		WebDataBinder binder = binderFactory.createBinder(webRequest, attribute, name);
 		if (binder.getTarget() != null) {
 			String[] allowedParams = null;
@@ -112,6 +119,7 @@ public class AllowedParamsModelAttributeMethodProcessor implements HandlerMethod
 		if (value != null) {
 			Object attribute = createAttributeFromRequestValue(
 					value, attributeName, methodParam, binderFactory, request);
+			logger.debug("attribute : " + attribute.toString());
 			if (attribute != null) {
 				return attribute;
 			}
@@ -126,10 +134,11 @@ public class AllowedParamsModelAttributeMethodProcessor implements HandlerMethod
 	 */
 	protected void bindRequestParameters(WebDataBinder binder, NativeWebRequest request, String[] allowedParams) {
 		ServletRequestDataBinder servletBinder = (ServletRequestDataBinder) binder;
+		HttpServletRequest servletRequest = request.getNativeRequest(HttpServletRequest.class);
 		if (null != allowedParams) {
-			request = new AllowedParamNativeWebRequest(request, allowedParams);
+			logger.debug("allowed params: " + Arrays.toString(allowedParams));
+			servletRequest = new AllowedParamWrapper(servletRequest,allowedParams);
 		}
-		ServletRequest servletRequest = request.getNativeRequest(ServletRequest.class);
 		servletBinder.bind(servletRequest);
 	}
 
