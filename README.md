@@ -23,7 +23,7 @@ spring 提供的动态绑定, 如果是使用的数据表模型，则导致一�
  
  如下代码就会导致，只要客户端传递了参数 birthday,如果模型有对应的属性的话就可能被更新到。
  
- ```
+```
  @PostMapping("/update")
  public String update(User user, @PathVariable("id") Long id) {
  	userService.update(user,id);
@@ -55,7 +55,7 @@ spring 提供的动态绑定, 如果是使用的数据表模型，则导致一�
  }
 ```
 
- - 不自动绑定参数，而是获取参数的全部，在代码逻辑上做赋值过滤
+- 不自动绑定参数，而是获取参数的全部，在代码逻辑上做赋值过滤
  
 ```
  @PostMapping("/update")
