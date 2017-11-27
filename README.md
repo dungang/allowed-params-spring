@@ -13,14 +13,88 @@ spring boot allowed params
 	</dependency>
 ```
 
-> 服务端代码
+> 如何使用
 
-* 只允许`name`这个字段被接受
-* 在方法参数上注解，允许接受的参数列表，不在清单的参数不会被赋值给模型
+
+ *对绑定到模型的参数做过滤*
+
+spring 提供的动态绑定, 如果是使用的数据表模型，则导致一些不应该在前端修改的不安全。
+比如，用户模型，我在更新用户年龄的时候，不允许更新生日。
+ 
+ 如下代码就会导致，只要客户端传递了参数 birthday,如果模型有对应的属性的话就可能被更新到。
+ 
+ ```
+ @PostMapping("/update")
+ public String update(User user, @PathVariable("id") Long id) {
+ 	userService.update(user,id);
+  return "update/success";
+ }
+```
+ 
+*过滤的方式有3种方式:*
+
+* 当自动绑定请求的参数的时候，可以定义一个form模型，只接受固定的属性参数
+ 
+```
+ class UserFrom { 
+ 	private Integer age;
+  public Integer getAge(){
+  	return age;
+  }
+  public setAge(Integer age){
+  	this.age = age;
+  }
+ }
+```
+
+````
+ @PostMapping("/update")
+ public String update(UserForm user, @PathVariable("id") Long id) {
+ 	userService.update(user,id);
+  return "update/success";
+ }
+```
+
+*不自动绑定参数，而是获取参数的全部，在代码逻辑上做赋值过滤
+ 
+```
+ @PostMapping("/update")
+ public String update(HtttpServletRequest request, @PathVariable("id") Long id) {
+  User user = new User();
+  user.setAge(request.getParameterValue("age"));
+ 	userService.update(user,id);
+  return "update/success";
+ }
+```
+
+*使用本文件定义的注解 @AllowedParams
+
+*先配置参数解析器*
 
 ```
-public AjaxResult edit(@Valid @AllowedParams(params= {"name"}) Department department ){}
+   @Bean
+   public WebMvcConfigurer corsConfigurer() {
+      return new WebMvcConfigurerAdapter() {
+ *		@Override
+ *		public void addArgumentResolvers(List&lt;HandlerMethodArgumentResolver&gt; argumentResolvers) {
+ *			//添加自定义的参数解析注解器
+ *			argumentResolvers.add(new AllowedParamsModelAttributeMethodProcessor());
+ *			super.addArgumentResolvers(argumentResolvers);
+ *		}
+   };
+ }
 ```
+
+*给方法参数添加注解*
+
+```
+ @PostMapping("/update")
+ public String update( @AllowedParams(params={"age"}) User user, @PathVariable("id") Long id) {
+ 	userService.update(user,id);
+  return "update/success";
+ }
+```
+ 
 
 ## 协议
 

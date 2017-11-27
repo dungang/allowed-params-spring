@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -76,11 +75,9 @@ public class AllowedParamsModelAttributeMethodProcessor implements HandlerMethod
 			NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
 		
 		String name = ModelFactory.getNameForParameter(parameter);
-		logger.debug("parameter name :" + name);
+		
 		Object attribute = (mavContainer.containsAttribute(name) ? mavContainer.getModel().get(name) :
 				createAttribute(name, parameter, binderFactory, webRequest));
-
-		logger.debug("attribute : " + attribute.toString());
 		
 		WebDataBinder binder = binderFactory.createBinder(webRequest, attribute, name);
 		if (binder.getTarget() != null) {
@@ -119,7 +116,7 @@ public class AllowedParamsModelAttributeMethodProcessor implements HandlerMethod
 		if (value != null) {
 			Object attribute = createAttributeFromRequestValue(
 					value, attributeName, methodParam, binderFactory, request);
-			logger.debug("attribute : " + attribute.toString());
+			logger.debug("createAttributeFromRequestValue : " + attribute.toString());
 			if (attribute != null) {
 				return attribute;
 			}
