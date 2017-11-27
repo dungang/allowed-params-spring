@@ -45,9 +45,10 @@ spring 提供的动态绑定, 如果是使用的数据表模型，则导致一�
   	this.age = age;
   }
  }
+ 
 ```
 
-````
+```
  @PostMapping("/update")
  public String update(UserForm user, @PathVariable("id") Long id) {
  	userService.update(user,id);
