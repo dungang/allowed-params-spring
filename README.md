@@ -33,7 +33,7 @@ spring 提供的动态绑定, 如果是使用的数据表模型，则导致一�
  
 *过滤的方式有3种方式:*
 
-* 当自动绑定请求的参数的时候，可以定义一个form模型，只接受固定的属性参数
+- 当自动绑定请求的参数的时候，可以定义一个form模型，只接受固定的属性参数
  
 ```
  class UserFrom { 
@@ -55,7 +55,7 @@ spring 提供的动态绑定, 如果是使用的数据表模型，则导致一�
  }
 ```
 
-*不自动绑定参数，而是获取参数的全部，在代码逻辑上做赋值过滤
+ - 不自动绑定参数，而是获取参数的全部，在代码逻辑上做赋值过滤
  
 ```
  @PostMapping("/update")
@@ -67,7 +67,7 @@ spring 提供的动态绑定, 如果是使用的数据表模型，则导致一�
  }
 ```
 
-*使用本文件定义的注解 @AllowedParams
+- 使用本文件定义的注解 @AllowedParams
 
 *先配置参数解析器*
 
@@ -75,12 +75,12 @@ spring 提供的动态绑定, 如果是使用的数据表模型，则导致一�
    @Bean
    public WebMvcConfigurer corsConfigurer() {
       return new WebMvcConfigurerAdapter() {
- *		@Override
- *		public void addArgumentResolvers(List&lt;HandlerMethodArgumentResolver&gt; argumentResolvers) {
- *			//添加自定义的参数解析注解器
- *			argumentResolvers.add(new AllowedParamsModelAttributeMethodProcessor());
- *			super.addArgumentResolvers(argumentResolvers);
- *		}
+		@Override
+		public void addArgumentResolvers(List&lt;HandlerMethodArgumentResolver&gt; argumentResolvers) {
+			//添加自定义的参数解析注解器
+			argumentResolvers.add(new AllowedParamsModelAttributeMethodProcessor());
+			super.addArgumentResolvers(argumentResolvers);
+		}
    };
  }
 ```
