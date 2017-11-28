@@ -26,9 +26,11 @@ import java.lang.annotation.Target;
  * </code>
  * 
  * <p>过滤的方式有3种方式:</p>
- * <dt>
  * <dl>
+ * <dt>
  * 当自动绑定请求的参数的时候，可以定义一个form模型，只接受固定的属性参数
+ * </dt>
+ * <dd>
  * <code>
  * class UserFrom { 
  * 	private Integer age;
@@ -46,9 +48,11 @@ import java.lang.annotation.Target;
  *  return "update/success";
  * }
  * </code>
- * </dl>
- * <dl>
+ * </dd>
+ * <dt>
  * 不自动绑定参数，而是获取参数的全部，在代码逻辑上做赋值过滤
+ * </dt>
+ * <dd>
  * <code>
  * &#64;PostMapping("/update")
  * public String update(HtttpServletRequest request, &#64;PathVariable("id") Long id) {
@@ -58,16 +62,18 @@ import java.lang.annotation.Target;
  *  return "update/success";
  * }
  * </code>
- * </dl>
- * <dl>
+ * </dd>
+ * <dt>
  * 使用本文件定义的注解 &#64;AllowedParams
+ * </dt>
+ * <dd>
  * <p>先配置参数解析器</p>
  * <code>
  *   &#64;Bean
  *   public WebMvcConfigurer corsConfigurer() {
  *      return new WebMvcConfigurerAdapter() {
  *		&#64;Override
- *		public void addArgumentResolvers(List&lt;HandlerMethodArgumentResolver&gt; argumentResolvers) {
+ *		public void addArgumentResolvers(List&lt;HandterMethodArgumentResolver&gt; argumentResolvers) {
  *			//添加自定义的参数解析注解器
  *			argumentResolvers.add(new AllowedParamsModelAttributeMethodProcessor());
  *			super.addArgumentResolvers(argumentResolvers);
@@ -83,8 +89,8 @@ import java.lang.annotation.Target;
  *  return "update/success";
  * }
  * </code>
+ * </dd>
  * </dl>
- * <dt>
  * 
  * 
  * @author dungang
@@ -99,7 +105,7 @@ public @interface AllowedParams {
 	/**
 	 * 设置允许的参数名称
 	 * 
-	 * @return
+	 * @return 参数名称数组
 	 */
 	String[] params() default "";
 }

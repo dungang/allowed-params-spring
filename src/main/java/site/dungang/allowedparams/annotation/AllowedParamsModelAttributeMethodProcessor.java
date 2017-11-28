@@ -109,6 +109,7 @@ public class AllowedParamsModelAttributeMethodProcessor implements HandlerMethod
 	 * @param binderFactory for creating WebDataBinder instance
 	 * @param request the current request
 	 * @return the created model attribute (never {@code null})
+	 * @throws Exception thrown on a type mismatch when trying to set a bean property.
 	 */
 	protected Object createAttribute(String attributeName, MethodParameter methodParam,
 			WebDataBinderFactory binderFactory, NativeWebRequest request) throws Exception {
@@ -128,6 +129,7 @@ public class AllowedParamsModelAttributeMethodProcessor implements HandlerMethod
 	 * Extension point to bind the request to the target object.
 	 * @param binder the data binder instance to use for the binding
 	 * @param request the current request
+	 * @param allowedParams  允许接受的参数数组
 	 */
 	protected void bindRequestParameters(WebDataBinder binder, NativeWebRequest request, String[] allowedParams) {
 		ServletRequestDataBinder servletBinder = (ServletRequestDataBinder) binder;
@@ -212,9 +214,8 @@ public class AllowedParamsModelAttributeMethodProcessor implements HandlerMethod
 	 * @param methodParam the method parameter
 	 * @param binderFactory for creating WebDataBinder instance
 	 * @param request the current request
-	 * @return the created model attribute, or {@code null} if no suitable
-	 * conversion found
-	 * @throws Exception
+	 * @return the created model attribute, or {@code null} if no suitable conversion found
+	 * @throws Exception thrown on a type mismatch when trying to set a bean property.
 	 */
 	protected Object createAttributeFromRequestValue(String sourceValue, String attributeName,
 			MethodParameter methodParam, WebDataBinderFactory binderFactory, NativeWebRequest request)
